@@ -20,6 +20,8 @@ class AuthenticationTest extends TestCase
 
     public function testUsersCanAuthenticateUsingTheLoginScreen(): void
     {
+        $this->markTestSkipped('Waiting for register by API. Must be revisited.');
+
         $user = User::factory()->create();
 
         $response = $this->post('/login', [

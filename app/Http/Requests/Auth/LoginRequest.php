@@ -2,11 +2,13 @@
 
 namespace App\Http\Requests\Auth;
 
-use Illuminate\Auth\Events\Lockout;
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\RateLimiter;
+use App\Models\ApiUser;
 use Illuminate\Support\Str;
+use Illuminate\Auth\Events\Lockout;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\ValidationException;
 
 class LoginRequest extends FormRequest
@@ -41,15 +43,26 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
-            RateLimiter::hit($this->throttleKey());
+        $user = ApiUser::login(
+            (array) $this->only('email', 'password')
+        );
 
-            throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
-            ]);
+        $success = \is_object($user) && $user instanceof ApiUser;
+
+        if ($success) {
+            Auth::login($user);
+            Session::put('token', $user->token);
+
+            RateLimiter::clear($this->throttleKey());
+
+            return;
         }
 
-        RateLimiter::clear($this->throttleKey());
+        RateLimiter::hit($this->throttleKey());
+
+        throw ValidationException::withMessages([
+            'email' => trans('auth.failed'),
+        ]);
     }
 
     /**
@@ -59,7 +72,7 @@ class LoginRequest extends FormRequest
      */
     public function ensureIsNotRateLimited(): void
     {
-        if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
+        if (!RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
             return;
         }
 
