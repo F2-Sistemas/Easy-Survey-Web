@@ -1,17 +1,18 @@
 lockfileVersion: 5.4
 
 specifiers:
-  '@inertiajs/vue3': ^1.0.0
+  '@inertiajs/vue3': ^1.0.2
   '@tailwindcss/forms': ^0.5.3
-  '@vitejs/plugin-vue': ^4.0.0
-  '@vue/server-renderer': ^3.2.31
-  autoprefixer: ^10.4.12
-  axios: ^1.1.2
-  laravel-vite-plugin: ^0.7.2
-  postcss: ^8.4.18
-  tailwindcss: ^3.2.1
-  vite: ^4.0.0
-  vue: ^3.2.41
+  '@vitejs/plugin-vue': ^4.1.0
+  '@vue/server-renderer': ^3.2.47
+  autoprefixer: ^10.4.14
+  axios: ^1.3.4
+  laravel-vite-plugin: ^0.7.4
+  pnpm: ^7.30.1
+  postcss: ^8.4.21
+  tailwindcss: ^3.2.7
+  vite: ^4.2.1
+  vue: ^3.2.47
 
 devDependencies:
   '@inertiajs/vue3': 1.0.2_vue@3.2.47
@@ -21,6 +22,7 @@ devDependencies:
   autoprefixer: 10.4.14_postcss@8.4.21
   axios: 1.3.4
   laravel-vite-plugin: 0.7.4_vite@4.2.1
+  pnpm: 7.30.1
   postcss: 8.4.21
   tailwindcss: 3.2.7_postcss@8.4.21
   vite: 4.2.1
@@ -480,7 +482,7 @@ packages:
     hasBin: true
     dependencies:
       caniuse-lite: 1.0.30001469
-      electron-to-chromium: 1.4.334
+      electron-to-chromium: 1.4.337
       node-releases: 2.0.10
       update-browserslist-db: 1.0.10_browserslist@4.21.5
     dev: true
@@ -569,8 +571,8 @@ packages:
     resolution: {integrity: sha512-+HlytyjlPKnIG8XuRG8WvmBP8xs8P71y+SKKS6ZXWoEgLuePxtDoUEiH7WkdePWrQ5JBpE6aoVqfZfJUQkjXwA==}
     dev: true
 
-  /electron-to-chromium/1.4.334:
-    resolution: {integrity: sha512-laZ1odk+TRen6q0GeyQx/JEkpD3iSZT7ewopCpKqg9bTjP1l8XRfU3Bg20CFjNPZkp5+NDBl3iqd4o/kPO+Vew==}
+  /electron-to-chromium/1.4.337:
+    resolution: {integrity: sha512-W8gdzXG86mVPoc56eM8YA+QiLxaAxJ8cmDjxZgfhLLWVvZQxyA918w5tX2JEWApZta45T1/sYcmFHTsTOUE3nw==}
     dev: true
 
   /esbuild/0.17.12:
@@ -850,6 +852,12 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: true
 
+  /pnpm/7.30.1:
+    resolution: {integrity: sha512-ThkXKxTUIUd7HhXkwQ+zl3dSU1xPdf7cA9Khthm4GuUJDkM2KJOCBXqlzoHQepXD0i7GbURXAx+WKQ/m6taBrQ==}
+    engines: {node: '>=14.6'}
+    hasBin: true
+    dev: true
+
   /postcss-import/14.1.0_postcss@8.4.21:
     resolution: {integrity: sha512-flwI+Vgm4SElObFVPpTIT7SU7R3qk2L7PyduMcokiaVKuWv9d/U+Gm/QAd8NDLuykTWTkcrjOeD2Pp1rMeBTGw==}
     engines: {node: '>=10.0.0'}
@@ -967,8 +975,8 @@ packages:
     engines: {iojs: '>=1.0.0', node: '>=0.10.0'}
     dev: true
 
-  /rollup/3.20.0:
-    resolution: {integrity: sha512-YsIfrk80NqUDrxrjWPXUa7PWvAfegZEXHuPsEZg58fGCdjL1I9C1i/NaG+L+27kxxwkrG/QEDEQc8s/ynXWWGQ==}
+  /rollup/3.20.1:
+    resolution: {integrity: sha512-sz2w8cBJlWQ2E17RcpvHuf4sk2BQx4tfKDnjNPikEpLEevrbIAR7CH3PGa2hpPwWbNgPaA9yh9Jzljds5bc9zg==}
     engines: {node: '>=14.18.0', npm: '>=8.0.0'}
     hasBin: true
     optionalDependencies:
@@ -1108,7 +1116,7 @@ packages:
       esbuild: 0.17.12
       postcss: 8.4.21
       resolve: 1.22.1
-      rollup: 3.20.0
+      rollup: 3.20.1
     optionalDependencies:
       fsevents: 2.3.2
     dev: true
