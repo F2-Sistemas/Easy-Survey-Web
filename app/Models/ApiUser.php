@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Traits\ModelKeys;
 // use Illuminate\Auth\MustVerifyEmail;
 use Illuminate\Support\Arr;
+use Illuminate\Validation\Rules;
 use Illuminate\Support\Collection;
 use Illuminate\Support\MessageBag;
 use Illuminate\Auth\Authenticatable;
@@ -17,6 +18,7 @@ use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use Illuminate\Support\Facades\Session;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 // use Laravel\Sanctum\HasApiTokens;
@@ -188,12 +190,87 @@ class ApiUser implements
         $response = static::httpClient()->post('__/auth/login', $loginData);
         $responseData = (array) $response->json();
 
+        $message = Arr::get(
+            $responseData,
+            'message'
+        );
+
         if ($response->status() != 200) {
+            if ($message) {
+                Session::flash('success', $message);
+            }
+
             return new MessageBag([
                 'message' => Arr::get($responseData, 'message'),
                 'errors' => (array) Arr::get($responseData, 'errors'),
                 'status' => $response->status(),
             ]);
+        }
+
+        if ($message) {
+            Session::flash('success', $message);
+        }
+
+        return new static([
+            'id' => Arr::get($responseData, 'user.id'),
+            'name' => Arr::get($responseData, 'user.name'),
+            'email' => Arr::get($responseData, 'user.email'),
+            'token' => Arr::get($responseData, 'token'),
+        ]);
+    }
+
+    /**
+     * function register
+     *
+     * @param array $registerData
+     * @return ApiUser|MessageBag
+     */
+    public static function register(array $registerData): ApiUser|MessageBag
+    {
+        $registerData['password_confirmation'] = $registerData['password'] ?? \null;
+
+        $registerData = Validator::make($registerData, [
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255',
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        ])->validate();
+
+        $registerData['password_confirmation'] = $registerData['password'] ?? \null;
+
+        $response = static::httpClient()->post('__/auth/register', $registerData);
+        $responseData = (array) $response->json();
+
+        $message = Arr::get(
+            $responseData,
+            'message'
+        );
+
+        $status = $response->status();
+
+        try {
+            if ($status != 201) {
+                if ($message) {
+                    Session::flash('error', $message);
+                }
+
+                return new MessageBag([
+                    'message' => $message,
+                    'errors' => (array) Arr::get($responseData, 'errors'),
+                    'status' => $status,
+                ]);
+            }
+        } catch (\Throwable $th) {
+            \Log::error($th);
+
+            return new MessageBag([
+                'message' => app()->environment(['production', 'beta']) ? $message : $th->getMessage(),
+                'errors' => (array) Arr::get($responseData, 'errors'),
+                'status' => 500,
+            ]);
+        }
+
+        if ($message) {
+            Session::flash('success', $message);
         }
 
         return new static([

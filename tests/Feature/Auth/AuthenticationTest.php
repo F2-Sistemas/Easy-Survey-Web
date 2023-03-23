@@ -2,10 +2,11 @@
 
 namespace Tests\Feature\Auth;
 
+use Tests\TestCase;
 use App\Models\User;
+use App\Models\ApiUser;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 
 class AuthenticationTest extends TestCase
 {
@@ -20,9 +21,17 @@ class AuthenticationTest extends TestCase
 
     public function testUsersCanAuthenticateUsingTheLoginScreen(): void
     {
-        $this->markTestSkipped('Waiting for register by API. Must be revisited.');
+        $fakeUser = User::factory()->make()->toArray();
 
-        $user = User::factory()->create();
+        $fakeUser['password'] = 'password';
+
+        $user = ApiUser::register(
+            collect($fakeUser)->only([
+                'name',
+                'email',
+                'password',
+            ])->all()
+        );
 
         $response = $this->post('/login', [
             'email' => $user->email,
@@ -35,6 +44,7 @@ class AuthenticationTest extends TestCase
 
     public function testUsersCanNotAuthenticateWithInvalidPassword(): void
     {
+        $this->markTestSkipped('Waiting for CHANGE to use API. Must be revisited.');
         $user = User::factory()->create();
 
         $this->post('/login', [

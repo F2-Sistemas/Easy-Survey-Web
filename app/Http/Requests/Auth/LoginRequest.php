@@ -43,6 +43,8 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
+        $remember = $this->boolean('remember', false);
+
         $user = ApiUser::login(
             (array) $this->only('email', 'password')
         );
