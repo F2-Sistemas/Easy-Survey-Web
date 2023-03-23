@@ -247,8 +247,8 @@ class ApiUser implements
 
         $status = $response->status();
 
-        try {
-            if ($status != 201) {
+        if ($status != 201) {
+            try {
                 if ($message) {
                     Session::flash('error', $message);
                 }
@@ -258,15 +258,15 @@ class ApiUser implements
                     'errors' => (array) Arr::get($responseData, 'errors'),
                     'status' => $status,
                 ]);
-            }
-        } catch (\Throwable $th) {
-            \Log::error($th);
+            } catch (\Throwable $th) {
+                \Log::error($th);
 
-            return new MessageBag([
-                'message' => app()->environment(['production', 'beta']) ? $message : $th->getMessage(),
-                'errors' => (array) Arr::get($responseData, 'errors'),
-                'status' => 500,
-            ]);
+                return new MessageBag([
+                    'message' => app()->environment(['production', 'beta']) ? $message : $th->getMessage(),
+                    'errors' => (array) Arr::get($responseData, 'errors'),
+                    'status' => 500,
+                ]);
+            }
         }
 
         if ($message) {
